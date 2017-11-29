@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>http://midnighter.cn/2017/11/30/threading/</loc>
+    <lastmod>2017-11-29T17:50:44.000Z</lastmod>
+    <data>
+        <display>
+        <title>python多线程之threading</title>
+        <pubTime>2017-11-29T17:49:19.000Z</pubTime>
+        
+        <tag>threading</tag>
+         
+         
+           
+             
+              <breadCrumb title="多线程" url="http://midnighter.cn/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://midnighter.cn/2017/11/27/transport-layer/</loc>
     <lastmod>2017-11-27T14:22:58.000Z</lastmod>
     <data>
