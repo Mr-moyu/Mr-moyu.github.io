@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Moyu">
 <meta property="og:description" content="函数装饰器装饰器基础知识 动态的增加函数功能 装饰器在被装饰的函数定义之后立即运行，函数装饰器在导入模块时立即执行">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-30T13:31:39.000Z">
+<meta property="og:updated_time" content="2017-11-30T14:26:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="函数装饰器">
 <meta name="twitter:description" content="函数装饰器装饰器基础知识 动态的增加函数功能 装饰器在被装饰的函数定义之后立即运行，函数装饰器在导入模块时立即执行">
@@ -442,7 +442,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_averager</span><span class="params">()</span>:</span></span><br><span class="line">    series = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">averager</span><span class="params">(new_lue)</span>:</span></span><br><span class="line">        series.append(new_value)</span><br><span class="line">        total = sum(self.series)</span><br><span class="line">        <span class="keyword">return</span> total/len(series)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> averager</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>avg = make_averager()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>avg(<span class="number">10</span>)</span><br><span class="line"><span class="number">10.0</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>avg(<span class="number">11</span>)</span><br><span class="line"><span class="number">10.5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>avg(<span class="number">12</span>)</span><br><span class="line"><span class="number">12.0</span></span><br></pre></td></tr></table></figure>
 <p>第一种不难看出，self.series是实例属性，调用<em>call</em>会不断的改变series的值，而第二种，series是make_averager函数的局部变量，所以当我们调用avg(10)的时，make_averager函数已经返回，故本地作用域一去不返。averager的闭包延伸到那个函数作用域之外，包含自由变量的series的绑定。</p>
-<p>综上，闭包是一种函数，它会败柳定义函数时存在的自由变量的绑定，这样调用函数时，虽然定义作用域不可用了，但是仍能使用那些绑定。</p>
+<p>综上，闭包是一种函数，它会保留定义函数时存在的自由变量的绑定，这样调用函数时，虽然定义作用域不可用了，但是仍能使用那些绑定。</p>
 <h3 id="nonlocal"><a href="#nonlocal" class="headerlink" title="nonlocal"></a>nonlocal</h3><p>当被绑定的变量是数字或任何不可变类型(数字、字符串、元组)时，只能读取，不能更新，上面的series是列表，列表是可变对象。</p>
 <p>python3故引入nonlocal声明，它的作用是将变量标记为自由变量。</p>
 <h3 id="实现一个简单的装饰器"><a href="#实现一个简单的装饰器" class="headerlink" title="实现一个简单的装饰器"></a>实现一个简单的装饰器</h3><p>一个简单的装饰器，输出函数运行时间,函数名字，函数参数</p>
