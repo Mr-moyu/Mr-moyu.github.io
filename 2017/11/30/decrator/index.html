@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Moyu">
 <meta property="og:description" content="函数装饰器装饰器基础知识 动态的增加函数功能 装饰器在被装饰的函数定义之后立即运行，函数装饰器在导入模块时立即执行">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-01T11:07:59.000Z">
+<meta property="og:updated_time" content="2017-12-03T11:01:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="函数装饰器">
 <meta name="twitter:description" content="函数装饰器装饰器基础知识 动态的增加函数功能 装饰器在被装饰的函数定义之后立即运行，函数装饰器在导入模块时立即执行">
@@ -355,8 +355,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/装饰器/" itemprop="url" rel="index">
-                    <span itemprop="name">装饰器</span>
+                  <a href="/categories/流畅的python/" itemprop="url" rel="index">
+                    <span itemprop="name">流畅的python</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/流畅的python/函数式编程/" itemprop="url" rel="index">
+                    <span itemprop="name">函数式编程</span>
                   </a>
                 </span>
 
@@ -475,7 +486,7 @@
 <p>等同于</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">f = d1(d2(f))</span><br></pre></td></tr></table></figure>
 <h3 id="参数化装饰器"><a href="#参数化装饰器" class="headerlink" title="参数化装饰器"></a>参数化装饰器</h3><p>让装饰器接受其他参数，先创建一个装饰器工厂函数，把参数传给它，这个工厂函数返回一个装饰器。例如：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">registry = set()</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(active=True)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">decorate</span><span class="params">(fun)</span>:</span></span><br><span class="line">        print(<span class="string">"running register(active=%s)-&gt;decorate(%s)"</span> % (active, fun))</span><br><span class="line">        <span class="keyword">if</span> active:</span><br><span class="line">            registry.add(fun)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            registry.discard(fun)</span><br><span class="line">         <span class="keyword">return</span> fun</span><br><span class="line">    <span class="keyword">return</span> decorate</span><br><span class="line"></span><br><span class="line"><span class="meta">@register(active=False)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f1</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">'running f1()'</span>)</span><br><span class="line">    </span><br><span class="line"><span class="meta">@register()</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f2</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">'running f2()'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">registry = set()</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(active=True)</span>:</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">decorate</span><span class="params">(fun)</span>:</span></span><br><span class="line">        print(<span class="string">"running register(active=%s)-&gt;decorate(%s)"</span> % (active, fun))</span><br><span class="line">        <span class="keyword">if</span> active:</span><br><span class="line">            registry.add(fun)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            registry.discard(fun)</span><br><span class="line">         <span class="keyword">return</span> fun</span><br><span class="line">    <span class="keyword">return</span> decorate</span><br><span class="line"></span><br><span class="line"><span class="meta">@register(active=False)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f1</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">'running f1()'</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@register()</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f2</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">'running f2()'</span>)</span><br></pre></td></tr></table></figure>
 <p>当active为True时，fun会被添加至registry中，当active为false中，会删除fun。</p>
 
       
@@ -604,7 +615,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -615,7 +626,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

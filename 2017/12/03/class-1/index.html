@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="变量可变性与不可变性引用式变量：变量是标注，而不是盒子 12345&amp;gt;&amp;gt;&amp;gt; a = [1, 3, 5]&amp;gt;&amp;gt;&amp;gt; b = a&amp;gt;&amp;gt;&amp;gt; a.append(7)&amp;gt;&amp;gt;&amp;gt">
+<meta name="keywords" content="python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对象引用、可变性、垃圾回收">
+<meta property="og:url" content="http://midnighter.cn/2017/12/03/class-1/index.html">
+<meta property="og:site_name" content="Moyu">
+<meta property="og:description" content="变量可变性与不可变性引用式变量：变量是标注，而不是盒子 12345&amp;gt;&amp;gt;&amp;gt; a = [1, 3, 5]&amp;gt;&amp;gt;&amp;gt; b = a&amp;gt;&amp;gt;&amp;gt; a.append(7)&amp;gt;&amp;gt;&amp;gt; b[1, 3, 5, 7] 变量只是对象的一个tag标签，一个对象可以有多个tag。   标识、相等性和别名  类似于一个人可以有真名，别名，笔名，绰号 == 运算符比较两">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-03T11:00:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="对象引用、可变性、垃圾回收">
+<meta name="twitter:description" content="变量可变性与不可变性引用式变量：变量是标注，而不是盒子 12345&amp;gt;&amp;gt;&amp;gt; a = [1, 3, 5]&amp;gt;&amp;gt;&amp;gt; b = a&amp;gt;&amp;gt;&amp;gt; a.append(7)&amp;gt;&amp;gt;&amp;gt; b[1, 3, 5, 7] 变量只是对象的一个tag标签，一个对象可以有多个tag。   标识、相等性和别名  类似于一个人可以有真名，别名，笔名，绰号 == 运算符比较两">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'moyu'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://midnighter.cn/2017/12/03/class-1/"/>
+
+
+
+
+
+  <title>对象引用、可变性、垃圾回收 | Moyu</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?39d21a4003378774cadc530141e14885";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Moyu</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">moyu's blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://midnighter.cn/2017/12/03/class-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="moyu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Moyu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">对象引用、可变性、垃圾回收</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-03T16:34:45+08:00">
+                2017-12-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/流畅的python/" itemprop="url" rel="index">
+                    <span itemprop="name">流畅的python</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/流畅的python/面向对象/" itemprop="url" rel="index">
+                    <span itemprop="name">面向对象</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-comment-o"></i>
+              </span>
+              
+                <a href="/2017/12/03/class-1/#SOHUCS" itemprop="discussionUrl">
+                  <span id="changyan_count_unit" class="post-comments-count hc-comment-count" data-xid="2017/12/03/class-1/" itemprop="commentsCount"></span>
+                </a>
+              
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>本文总阅读量
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>人次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="变量可变性与不可变性"><a href="#变量可变性与不可变性" class="headerlink" title="变量可变性与不可变性"></a>变量可变性与不可变性</h1><p>引用式变量：变量是<strong>标注</strong>，而不是<strong>盒子</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = a</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a.append(<span class="number">7</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b</span><br><span class="line">[<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>]</span><br></pre></td></tr></table></figure>
+<p>变量只是对象的一个tag标签，一个对象可以有多个tag。</p>
+<!-- ------more--------- -->
+<ul>
+<li><h2 id="标识、相等性和别名"><a href="#标识、相等性和别名" class="headerlink" title="标识、相等性和别名"></a>标识、相等性和别名</h2></li>
+</ul>
+<p>类似于一个人可以有真名，别名，笔名，绰号</p>
+<p>== 运算符比较两个对象的值，而 is 比较对象的标识(根据此判断两个变量绑定的是不是同一个对象)(如果是常用对象如整型-5–255之间，则都是同一个对象)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">800</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="number">800</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a == b</span><br><span class="line"><span class="keyword">True</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><h2 id="元组的相对不变性"><a href="#元组的相对不变性" class="headerlink" title="元组的相对不变性"></a>元组的相对不变性</h2></li>
+</ul>
+<p>元组的不变性是指tuple数据结构的物理内容(保存的引用)不可变，当引用的对象是可变对象如list，此时该引用(list)可变，换句话说，元组的不可变性与引用的对象无关。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; t1 = (1, 2, [3, 4])</span><br><span class="line">&gt;&gt;&gt; t2 = (1, 2, [3, 4])</span><br><span class="line">&gt;&gt;&gt; t1 == t2</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; t3 = t1</span><br><span class="line">&gt;&gt;&gt; t1 is t3</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; t1[-1].append(5)</span><br><span class="line">&gt;&gt;&gt; t1</span><br><span class="line">(1, 2, [3, 4, 5])</span><br><span class="line">&gt;&gt;&gt; t1 == t2</span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+<ul>
+<li><h2 id="浅复制与深复制"><a href="#浅复制与深复制" class="headerlink" title="浅复制与深复制"></a>浅复制与深复制</h2></li>
+</ul>
+<p>浅复制：副本共享内部对象的引用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">l1 = [<span class="number">3</span>, [<span class="number">66</span>, <span class="number">55</span>, <span class="number">44</span>], (<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>)]</span><br><span class="line">l2 = list(l1)           <span class="comment"># 1</span></span><br><span class="line">l1.append(<span class="number">100</span>)          <span class="comment"># 2</span></span><br><span class="line">l1[<span class="number">1</span>].remove(<span class="number">55</span>)        <span class="comment"># 3</span></span><br><span class="line">print(l1)</span><br><span class="line">print(l2)</span><br><span class="line">l2[<span class="number">1</span>] += [<span class="number">33</span>, <span class="number">22</span>]       <span class="comment"># 4</span></span><br><span class="line">l2[<span class="number">2</span>] += [<span class="number">10</span>, <span class="number">11</span>]       <span class="comment"># 5</span></span><br><span class="line">print(l1)</span><br><span class="line">print(l2)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>1</strong>: l2 是 l1 的浅复制副本，共享内部对象的引用，也就是说，l1 和 l2中[66, 55, 44], (7,8,9)其实指的是同一对象</p>
+<p><strong>2</strong>: 浅复制只是共享内部对象的引用，当然本身的修改则不会对副本产生影响</p>
+<p><strong>3</strong>: 内部列表l1[1]中的55删除，则对l2产生影响，因为两者绑定的同一对象</p>
+<p><strong>4</strong>: 对可变对象来说，+= 运算符就地修改列表，故两者都会改变</p>
+<p><strong>5</strong>: 对元组不可变对象来说 += 运算符创建一个新元组，然后重新绑定给变量l2[2]，于是 l1,l2中的元组不是同一对象，则l1 不会改变</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">3</span>, [<span class="number">66</span>, <span class="number">44</span>], (<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>), <span class="number">100</span>]</span><br><span class="line">[<span class="number">3</span>, [<span class="number">66</span>, <span class="number">44</span>], (<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>)]</span><br><span class="line">[<span class="number">3</span>, [<span class="number">66</span>, <span class="number">44</span>, <span class="number">33</span>, <span class="number">22</span>], (<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>), <span class="number">100</span>]</span><br><span class="line">[<span class="number">3</span>, [<span class="number">66</span>, <span class="number">44</span>, <span class="number">33</span>, <span class="number">22</span>], (<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>)]</span><br></pre></td></tr></table></figure>
+<p>深复制：副本不共享内部对象的引用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> copy</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bus</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, passengers=None)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> passengers <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">            self.passengers = []</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.passengers = list(passengers)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pick</span><span class="params">(self, name)</span>:</span></span><br><span class="line">        self.passengers.append(name)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">drop</span><span class="params">(self, name)</span>:</span></span><br><span class="line">        self.passengers.remove(name)</span><br><span class="line"></span><br><span class="line">bus1 = Bus([<span class="string">'alice'</span>, <span class="string">'bill'</span>, <span class="string">'claire'</span>, <span class="string">'david'</span>])</span><br><span class="line">bus2 = copy.copy(bus1)</span><br><span class="line">bus3 = copy.deepcopy(bus1)</span><br><span class="line">print(id(bus1), id(bus2), id(bus3))</span><br><span class="line"></span><br><span class="line">bus1.drop(<span class="string">'bill'</span>)</span><br><span class="line">print(bus2.passengers)</span><br><span class="line">print(id(bus1.passengers), id(bus2.passengers), id(bus3.passengers))</span><br><span class="line">print(bus3.passengers)</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">4446707784</span> <span class="number">4446708008</span> <span class="number">4446708680</span></span><br><span class="line">[<span class="string">'alice'</span>, <span class="string">'claire'</span>, <span class="string">'david'</span>]</span><br><span class="line"><span class="number">4446689736</span> <span class="number">4446689736</span> <span class="number">4446688136</span></span><br><span class="line">[<span class="string">'alice'</span>, <span class="string">'bill'</span>, <span class="string">'claire'</span>, <span class="string">'david'</span>]</span><br></pre></td></tr></table></figure>
+<p>因为copy.copy是浅复制，bus1让 bill 下车，则使 bus2的乘客少了 bill,而 bus3 是深复制，bus3.passengers 和bus1.passengers 不是同一对象，则对bus3的乘客不产生影响。</p>
+<ul>
+<li><h2 id="函数不要使用可变对象作为参数"><a href="#函数不要使用可变对象作为参数" class="headerlink" title="函数不要使用可变对象作为参数"></a>函数不要使用可变对象作为参数</h2></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HaunteBus</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, passengers=[])</span>:</span></span><br><span class="line">        self.passengers = passengers</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pick</span><span class="params">(self, name)</span>:</span></span><br><span class="line">        self.passengers.append(name)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">drop</span><span class="params">(self, name)</span>:</span></span><br><span class="line">        self.passengers.remove(name)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">bus1 = HaunteBus([<span class="string">'alice'</span>, <span class="string">'bill'</span>])</span><br><span class="line">print(bus1.passengers)</span><br><span class="line"></span><br><span class="line">bus1.pick(<span class="string">'charlie'</span>)</span><br><span class="line">bus1.drop(<span class="string">'alice'</span>)</span><br><span class="line">print(bus1.passengers)</span><br><span class="line"></span><br><span class="line">bus2 = HaunteBus()</span><br><span class="line">bus2.pick(<span class="string">'carrie'</span>)</span><br><span class="line">print(bus2.passengers)</span><br><span class="line"></span><br><span class="line">bus3 = HaunteBus()</span><br><span class="line">print(bus3.passengers)</span><br><span class="line"></span><br><span class="line">bus3.pick(<span class="string">'dave'</span>)</span><br><span class="line">print(bus2.passengers)</span><br><span class="line"></span><br><span class="line">print(bus2.passengers <span class="keyword">is</span> bus3.passengers)</span><br><span class="line"></span><br><span class="line">print(bus1.passengers)</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[<span class="string">'alice'</span>, <span class="string">'bill'</span>]</span><br><span class="line">[<span class="string">'bill'</span>, <span class="string">'charlie'</span>]</span><br><span class="line">[<span class="string">'carrie'</span>]</span><br><span class="line">[<span class="string">'carrie'</span>]</span><br><span class="line">[<span class="string">'carrie'</span>, <span class="string">'dave'</span>]</span><br><span class="line"><span class="keyword">True</span></span><br><span class="line">[<span class="string">'bill'</span>, <span class="string">'charlie'</span>]</span><br></pre></td></tr></table></figure>
+<p>为什么会出现这种情况呢？bus3 自带一位”幽灵”乘客。这是因为，在实例化对象HaunteBus时，不指定乘客的话，self.passengers 变成 passengers参数默认值的别名，即 bus2.passengers 和 bus3.passengers指的同一对象。根源是，默认值在定义函数计算(通常是在加载模块时)，默认值变成了函数对象的属性。</p>
+<p>因此，如果默认值是可变对象，而且修改了它的值，那么后续的函数调用都会受到影响。</p>
+<ul>
+<li><h2 id="防御可变参数"><a href="#防御可变参数" class="headerlink" title="防御可变参数"></a>防御可变参数</h2></li>
+</ul>
+<p>如同上述例子，为了防止出现self.passengers变成passengers的别名，校车应该自己维护乘客列表。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.passengers = list(passengers)</span><br></pre></td></tr></table></figure>
+<p>这种方法使得传给passengers参数的值可以是元组或任何其他可迭代对象，因为list构造方法接受任何可迭代对象。</p>
+<h1 id="del-和-垃圾回收"><a href="#del-和-垃圾回收" class="headerlink" title="del 和 垃圾回收"></a>del 和 垃圾回收</h1><p>对象绝不会自行销毁；然而，无法得到对象时，可能会被当作垃圾回收。</p>
+<p>del 语句删除名称，而不是对象。del 命令可能会导致对象被当作垃圾回收，仅当删除的变量保存的是对象的最后一个引用，或者无法得到对象时。</p>
+<p>在CPython中，垃圾回收的主要算法是引用计数。当引用计数归零时，对象立即被销毁。</p>
+<h4 id="弱引用"><a href="#弱引用" class="headerlink" title="弱引用"></a>弱引用</h4><p>弱引用不会增加对象的引用数量。引用的目标对象为所指对象。所以，弱引用不会妨碍所指对象被当作垃圾回收。</p>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li>简单的赋值不创建副本</li>
+<li>对 += 或 *= 所做的增量赋值来说，如果左边的变量绑定的是不可变对象，会创建新对象；如果是可变对象，会就地修改。</li>
+<li>为现有的变量赋于新值，不会修改之前绑定的变量，这叫重新绑定：现在变量绑定了其他对象。如果之前是最后一个引用，对象会被当作垃圾回收</li>
+<li>函数的参数以别名的形式传递，这意味着，函数可能会修改通过参数传入的可变对象，这一行为无法避免，除非在本地创建副本，或者使用不可变对象</li>
+<li>使用可变类型作为函数参数的默认值有危险，因为如果就地修改了参数，默认值也就变了，这会影响以后使用默认值的调用</li>
+<li>在CPython 中，两对象循环引用时，两个对象都会被销毁</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/01/func-for-progranming/" rel="next" title="函数式编程">
+                <i class="fa fa-chevron-left"></i> 函数式编程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="SOHUCS"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="moyu" />
+          <p class="site-author-name" itemprop="name">moyu</p>
+           
+              <p class="site-description motion-element" itemprop="description">my coding life...</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Mr-moyu" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      github
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yhis.me" title="Hacl" target="_blank">Hacl</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.northity.com" title="朔方" target="_blank">朔方</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://139.199.25.125" title="艾老师" target="_blank">艾老师</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#变量可变性与不可变性"><span class="nav-number">1.</span> <span class="nav-text">变量可变性与不可变性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#标识、相等性和别名"><span class="nav-number">1.1.</span> <span class="nav-text">标识、相等性和别名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#元组的相对不变性"><span class="nav-number">1.2.</span> <span class="nav-text">元组的相对不变性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浅复制与深复制"><span class="nav-number">1.3.</span> <span class="nav-text">浅复制与深复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数不要使用可变对象作为参数"><span class="nav-number">1.4.</span> <span class="nav-text">函数不要使用可变对象作为参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#防御可变参数"><span class="nav-number">1.5.</span> <span class="nav-text">防御可变参数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#del-和-垃圾回收"><span class="nav-number">2.</span> <span class="nav-text">del 和 垃圾回收</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#弱引用"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">弱引用</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">moyu</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      人
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/three.min.js"></script>
+
+  
+  <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+    <script type="text/javascript">
+    (function(){
+      var appid = 'cytkKeGj1';
+      var conf = '80baa26c09a13f9365ff25ba06bf48c0';
+      var width = window.innerWidth || document.documentElement.clientWidth;
+      if (width < 960) {
+      window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){
+        window.changyan.api.config({appid:appid,conf:conf})});
+      }
+    })();
+    </script>
+    <script type="text/javascript" src="https://assets.changyan.sohu.com/upload/plugins/plugins.count.js"></script>
+  
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
