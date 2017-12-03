@@ -4,6 +4,29 @@
 
     
   <url>
+    <loc>http://midnighter.cn/2017/12/03/class-1/</loc>
+    <lastmod>2017-12-03T11:03:08.000Z</lastmod>
+    <data>
+        <display>
+        <title>对象引用、可变性、垃圾回收</title>
+        <pubTime>2017-12-03T08:34:45.000Z</pubTime>
+        
+        <tag>python</tag>
+         
+         
+           
+             
+              <breadCrumb title="流畅的python" url="http://midnighter.cn/categories/%E6%B5%81%E7%95%85%E7%9A%84python/"/>
+          
+             
+              <breadCrumb title="面向对象" url="http://midnighter.cn/categories/%E6%B5%81%E7%95%85%E7%9A%84python/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://midnighter.cn/2017/12/01/text-byte/</loc>
     <lastmod>2017-12-03T11:01:52.000Z</lastmod>
     <data>
@@ -66,29 +89,6 @@
           
              
               <breadCrumb title="函数式编程" url="http://midnighter.cn/categories/%E6%B5%81%E7%95%85%E7%9A%84python/%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://midnighter.cn/2017/12/03/class-1/</loc>
-    <lastmod>2017-12-03T11:00:17.000Z</lastmod>
-    <data>
-        <display>
-        <title>对象引用、可变性、垃圾回收</title>
-        <pubTime>2017-12-03T08:34:45.000Z</pubTime>
-        
-        <tag>python</tag>
-         
-         
-           
-             
-              <breadCrumb title="流畅的python" url="http://midnighter.cn/categories/%E6%B5%81%E7%95%85%E7%9A%84python/"/>
-          
-             
-              <breadCrumb title="面向对象" url="http://midnighter.cn/categories/%E6%B5%81%E7%95%85%E7%9A%84python/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/"/>
           
         </display>
     </data>
