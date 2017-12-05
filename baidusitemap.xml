@@ -4,6 +4,29 @@
 
     
   <url>
+    <loc>http://midnighter.cn/2017/12/01/func-for-progranming/</loc>
+    <lastmod>2017-12-04T11:32:15.000Z</lastmod>
+    <data>
+        <display>
+        <title>函数式编程</title>
+        <pubTime>2017-12-01T11:37:52.000Z</pubTime>
+        
+        <tag>python</tag>
+         
+         
+           
+             
+              <breadCrumb title="流畅的python" url="http://midnighter.cn/categories/%E6%B5%81%E7%95%85%E7%9A%84python/"/>
+          
+             
+              <breadCrumb title="函数式编程" url="http://midnighter.cn/categories/%E6%B5%81%E7%95%85%E7%9A%84python/%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://midnighter.cn/2017/12/03/class-1/</loc>
     <lastmod>2017-12-04T11:31:07.000Z</lastmod>
     <data>
@@ -56,29 +79,6 @@
         <display>
         <title>函数装饰器</title>
         <pubTime>2017-11-30T13:26:48.000Z</pubTime>
-        
-        <tag>python</tag>
-         
-         
-           
-             
-              <breadCrumb title="流畅的python" url="http://midnighter.cn/categories/%E6%B5%81%E7%95%85%E7%9A%84python/"/>
-          
-             
-              <breadCrumb title="函数式编程" url="http://midnighter.cn/categories/%E6%B5%81%E7%95%85%E7%9A%84python/%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://midnighter.cn/2017/12/01/func-for-progranming/</loc>
-    <lastmod>2017-12-03T11:00:57.000Z</lastmod>
-    <data>
-        <display>
-        <title>函数式编程</title>
-        <pubTime>2017-12-01T11:37:52.000Z</pubTime>
         
         <tag>python</tag>
          
