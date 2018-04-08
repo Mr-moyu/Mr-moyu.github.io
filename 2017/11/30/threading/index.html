@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Moyu">
 <meta property="og:description" content="多线程编程之threading123456781。单进程单线程：一个人在一个桌子上吃菜。2。单进程多线程：多个人在同一个桌子上一起吃菜。3。多进程单线程：多个人每个人在自己的桌子上吃菜。多线程的问题是多个人同时吃一道菜的时候容易发生争抢，例如两个人同时夹一个菜，一个人刚伸出筷子，结果伸到的时候已经被夹走菜了。。。此时就必须等一个人夹一口之后，在还给另外一个人夹菜，也就是说资源共享就会发生冲突争抢。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-30T03:34:21.000Z">
+<meta property="og:updated_time" content="2018-04-08T05:08:44.493Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python多线程之threading">
 <meta name="twitter:description" content="多线程编程之threading123456781。单进程单线程：一个人在一个桌子上吃菜。2。单进程多线程：多个人在同一个桌子上一起吃菜。3。多进程单线程：多个人每个人在自己的桌子上吃菜。多线程的问题是多个人同时吃一道菜的时候容易发生争抢，例如两个人同时夹一个菜，一个人刚伸出筷子，结果伸到的时候已经被夹走菜了。。。此时就必须等一个人夹一口之后，在还给另外一个人夹菜，也就是说资源共享就会发生冲突争抢。">
@@ -424,7 +424,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,890 字
+                  2,160 字
                 </span>
               
 
@@ -440,7 +440,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  8 分
+                  9 分
                 </span>
               
             </div>
@@ -509,8 +509,17 @@
 <p>改成：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mutex = threading.RLock()</span><br></pre></td></tr></table></figure>
 <p>即可破坏死锁。</p>
+<h3 id="守护线程-1"><a href="#守护线程-1" class="headerlink" title="守护线程"></a>守护线程</h3><p>守护线程,顾名思义，就是守护的意思，等待主线程结束而直接退出，一般起辅助作用。</p>
+<ul>
+<li>对主进程来说，运行完毕指的是主进程代码运行完毕</li>
+<li>对主线程来说，运行完毕指的是主线程所在的进程内所有非守护线程统统运行完毕，主线程才算运行完毕</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span></span><br><span class="line">  print(<span class="string">'start_1'</span>)</span><br><span class="line">  time.sleep(<span class="number">4</span>)</span><br><span class="line">  print(<span class="string">'end_1'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bar</span><span class="params">()</span>:</span></span><br><span class="line">  print(<span class="string">'start_2'</span>)</span><br><span class="line">  time.sleep(<span class="number">1</span>)</span><br><span class="line">  print(<span class="string">'end_2'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">  t1 = threading.Thread(target=foo)</span><br><span class="line">  t2 = threading.Thread(target=bar)</span><br><span class="line"></span><br><span class="line">  t1.setDaemon(<span class="keyword">True</span>)</span><br><span class="line">  t1.start()</span><br><span class="line">  t2.start()</span><br><span class="line"></span><br><span class="line">  print(<span class="string">'----------'</span>)</span><br></pre></td></tr></table></figure>
+<p>运行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">start_1</span><br><span class="line">start_2</span><br><span class="line">----------</span><br><span class="line">end_2</span><br></pre></td></tr></table></figure></p>
+<p>如果将<figure class="highlight plain"><figcaption><span>运行结果：</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">start_1</span><br><span class="line">start_2</span><br><span class="line">----------</span><br><span class="line">end_1</span><br><span class="line">end_2</span><br></pre></td></tr></table></figure></p>
+<p>在第一次运行中，主线程等待t2结束，此时t1还在阻塞中，t2结束以后，即主线程结束，此时t1还处于阻塞中；第二次运行中，由于t2阻塞的时间更长，所以导致t1先于主线程结束。</p>
 <hr>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p><strong>需要注意的是，Python有一个GIL（Global Interpreter Lock）机制</strong>，任何线程在运行之前必须获取这个全局锁才能执行，每当执行完100条字节码，全局锁才会释放，切换到其他线程执行。</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p><strong>需要注意的是，Python(CPython)有一个GIL（Global Interpreter Lock）机制</strong>，任何线程在运行之前必须获取这个全局锁才能执行，每当执行完100条字节码，全局锁才会释放，切换到其他线程执行。</p>
 <p>所以Python中的多线程不能利用多核计算机的优势，无论有多少个核，同一时间只有一个线程能得到全局锁，只有一个线程能够运行。</p>
 <p> 那么Python中的多线程有什么作用呢？为什么不直接使用Python中的多进程标准库？这里要根据程序执行的是IO密集型任务和计算密集型任务来选择。当执行IO密集型任务时，比如Python爬虫，大部分时间都用在了等待返回的socket数据上，CPU此时是完全闲置的，这种情况下采用多线程较好。当执行计算密集型任务时，比如图像处理，大部分时间CPU都在计算，这种情况下使用多进程才能真正的加速，使用多线程不仅得不到并行加速的效果，反而因为频繁切换上下文拖慢了速度。</p>
 
@@ -732,7 +741,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#多线程编程之threading"><span class="nav-number">1.</span> <span class="nav-text">多线程编程之threading</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#线程启动的两种方式"><span class="nav-number">1.1.</span> <span class="nav-text">线程启动的两种方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#守护线程"><span class="nav-number">1.2.</span> <span class="nav-text">守护线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thread-join"><span class="nav-number">1.3.</span> <span class="nav-text">Thread.join()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#死锁"><span class="nav-number">1.4.</span> <span class="nav-text">死锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#产生死锁的主要原因"><span class="nav-number">1.4.1.</span> <span class="nav-text">产生死锁的主要原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四个必要条件"><span class="nav-number">1.4.2.</span> <span class="nav-text">四个必要条件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#互斥锁与可重入锁"><span class="nav-number">1.5.</span> <span class="nav-text">互斥锁与可重入锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#互斥锁"><span class="nav-number">1.5.1.</span> <span class="nav-text">互斥锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可重入锁"><span class="nav-number">1.5.2.</span> <span class="nav-text">可重入锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">1.6.</span> <span class="nav-text">注意</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#多线程编程之threading"><span class="nav-number">1.</span> <span class="nav-text">多线程编程之threading</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#线程启动的两种方式"><span class="nav-number">1.1.</span> <span class="nav-text">线程启动的两种方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#守护线程"><span class="nav-number">1.2.</span> <span class="nav-text">守护线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thread-join"><span class="nav-number">1.3.</span> <span class="nav-text">Thread.join()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#死锁"><span class="nav-number">1.4.</span> <span class="nav-text">死锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#产生死锁的主要原因"><span class="nav-number">1.4.1.</span> <span class="nav-text">产生死锁的主要原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四个必要条件"><span class="nav-number">1.4.2.</span> <span class="nav-text">四个必要条件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#互斥锁与可重入锁"><span class="nav-number">1.5.</span> <span class="nav-text">互斥锁与可重入锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#互斥锁"><span class="nav-number">1.5.1.</span> <span class="nav-text">互斥锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可重入锁"><span class="nav-number">1.5.2.</span> <span class="nav-text">可重入锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#守护线程-1"><span class="nav-number">1.5.3.</span> <span class="nav-text">守护线程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">1.6.</span> <span class="nav-text">注意</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -754,8 +763,8 @@
       <div class="footer-inner">
         <div class="copyright" >
   
-  &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -777,7 +786,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共9.5k字</span>
+  <span class="post-count">博客全站共9.7k字</span>
 </div>
 
         
